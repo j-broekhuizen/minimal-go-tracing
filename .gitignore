@@ -4,18 +4,21 @@
 *.dll
 *.so
 *.dylib
-app/chat-demo
+go-bot-chat/chat-demo
+go-bot-itsm/itsm-demo
 
 langsmith-go/
+
+.claude
 
 # Output of go coverage
 *.out
 
-# Go workspace
+# go workspace
 go.work
 go.work.sum
 
-# Environment variables
+# env
 .env
 .env.local
 .env.*.local

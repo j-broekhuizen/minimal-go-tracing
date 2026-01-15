@@ -44,7 +44,7 @@ func main() {
 
 	projectName := os.Getenv("LANGSMITH_PROJECT")
 	if projectName == "" {
-		projectName = "default"
+		projectName = "go-bot-chat"
 	}
 
 	// Initialize OpenTelemetry tracing to LangSmith
@@ -64,10 +64,10 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	tracer := otel.Tracer("go-chat-demo")
 
-	// Generate a unique thread ID for this conversation session
+	// Generate a unique thread ID per session
 	threadID := uuid.New().String()
 
-	// Maintain conversation history for multi-turn chat
+	// Maintain conversation history 
 	var conversationHistory []anthropic.MessageParam
 
 	fmt.Printf("Chat with Claude (tracing to LangSmith project: %s)\n", projectName)
@@ -88,7 +88,11 @@ func main() {
 		}
 		if strings.ToLower(userMessage) == "quit" {
 			fmt.Println("\nFlushing traces to LangSmith...")
-			time.Sleep(2 * time.Second)
+			if tp, ok := otel.GetTracerProvider().(*sdktrace.TracerProvider); ok {
+				if err := tp.ForceFlush(ctx); err != nil {
+					log.Printf("Error flushing traces: %v", err)
+				}
+			}
 			fmt.Println("Goodbye!")
 			return
 		}
@@ -122,15 +126,15 @@ func main() {
 			continue
 		}
 
-		// Extract and display response
-		var responseText string
+		// Extract and display response (concat all text blocks)
+		var textParts []string
 		for _, block := range resp.Content {
 			if block.Type == "text" {
-				responseText = block.Text
+				textParts = append(textParts, block.Text)
 			}
 		}
+		responseText := strings.Join(textParts, "\n")
 
-		// Set output and token usage on the parent span for Thread view
 		turnSpan.SetAttributes(
 			attribute.String("gen_ai.completion", responseText),
 			attribute.Int64("gen_ai.usage.input_tokens", resp.Usage.InputTokens),
@@ -144,9 +148,7 @@ func main() {
 
 		turnSpan.End()
 
-		fmt.Printf("\nClaude: %s\n", responseText)
-		fmt.Printf("(%d input, %d output tokens)\n\n",
-			resp.Usage.InputTokens, resp.Usage.OutputTokens)
+		fmt.Printf("\nClaude: %s\n\n", responseText)
 	}
 }
 
@@ -188,6 +190,8 @@ func initTracer(apiKey, projectName string) (func(), error) {
 	return func() {
 		shutdownCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
-		tp.Shutdown(shutdownCtx)
+		if err := tp.Shutdown(shutdownCtx); err != nil {
+			log.Printf("Error shutting down tracer: %v", err)
+		}
 	}, nil
 }
