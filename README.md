@@ -1,6 +1,6 @@
 # Go Tracing with LangSmith
 
-A demo Go application showing how to trace LLM calls to [LangSmith](https://smith.langchain.com) using OpenTelemetry.
+A demo Go application showing how to trace LLM calls to [LangSmith](https://smith.langchain.com) using the [LangSmith Go SDK](https://github.com/langchain-ai/langsmith-go).
 
 ## Features
 
@@ -94,11 +94,11 @@ Your App
 
 ### Key Files
 
-| File | Purpose |
-|------|---------|
-| `app/main.go` | Chat application with tracing |
-| `langsmith-go/` | The LangSmith Go SDK |
-| `.env` | API keys and configuration |
+| File            | Purpose                       |
+| --------------- | ----------------------------- |
+| `app/main.go`   | Chat application with tracing |
+| `langsmith-go/` | The LangSmith Go SDK          |
+| `.env`          | API keys and configuration    |
 
 ### Key Concepts
 
@@ -109,11 +109,11 @@ Your App
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `LANGSMITH_API_KEY` | Yes | Your LangSmith API key |
-| `LANGSMITH_PROJECT` | No | Project name (default: "default") |
-| `ANTHROPIC_API_KEY` | Yes | Your Anthropic API key |
+| Variable            | Required | Description                       |
+| ------------------- | -------- | --------------------------------- |
+| `LANGSMITH_API_KEY` | Yes      | Your LangSmith API key            |
+| `LANGSMITH_PROJECT` | No       | Project name (default: "default") |
+| `ANTHROPIC_API_KEY` | Yes      | Your Anthropic API key            |
 
 ## Resources
 
