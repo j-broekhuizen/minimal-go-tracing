@@ -4,10 +4,10 @@ Basic Go apps showing how to trace to [LangSmith](https://smith.langchain.com) u
 
 ## Apps
 
-| App           | Description                       |
-| ------------- | --------------------------------- |
-| `go-bot-chat` | Basic multi-turn chat with Claude |
-| `go-bot-itsm` | ITSM access request workflow      |
+| App           | Description                  |
+| ------------- | ---------------------------- |
+| `go-bot-chat` | Basic multi-turn chat        |
+| `go-bot-itsm` | ITSM access request workflow |
 
 ## Features
 
